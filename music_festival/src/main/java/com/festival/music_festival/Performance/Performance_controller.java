@@ -1,5 +1,7 @@
 package com.festival.music_festival.Performance;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,25 +26,44 @@ public class Performance_controller {
         this.performance_service = performance_service;
     }
 
+    // get
     @GetMapping
     public List<Performance> get_performance() {
         return performance_service.get_performance();
     }
 
+    // post
     @PostMapping
-    public void registrer_new_performace(@RequestBody Performance performance) {
+    public void registrer_new_performance(@RequestBody Performance performance) {
         performance_service.add_new_student(performance);
     }
 
-    @DeleteMapping(path = "{performace_id}")
-    public void delete_performace(@PathVariable("performace_id") Long performace_id) {
-        performance_service.delete_performace(performace_id);
+    // del
+    @DeleteMapping(path = "{performance_id}")
+    public void delete_performance(@PathVariable("performance_id") Long performance_id) {
+        performance_service.delete_performance(performance_id);
     }
 
+    // put
     @PutMapping(path = "{performance_id}")
-    public void update_performace(
+    public void update_performance(
             @PathVariable("performance_id") Long performance_id,
-            @RequestParam(required = false) String performace_name) {
-        performance_service.update_performace(performance_id, performace_name);
+            @RequestParam(required = false) String performance_name,
+            @RequestParam(required = false) String performance_group_names,
+            @RequestParam(required = false) String performance_type,
+            @RequestParam(required = false) Integer performance_duration,
+            @RequestParam(required = false) String performance_technical_requirements,
+            @RequestParam(required = false) String performance_merchandise_items,
+            @RequestParam(required = false) ArrayList<String> performance_song_list,
+            @RequestParam(required = false) ArrayList<LocalDateTime> performance_preferred_time_rehearsal,
+            @RequestParam(required = false) ArrayList<LocalDateTime> performance_preferred_time,
+            @RequestParam(required = false) String performance_description) {
+
+        performance_service.update_performance(performance_id,
+                performance_name, performance_group_names, performance_type,
+                performance_duration, performance_technical_requirements,
+                performance_merchandise_items, performance_song_list, performance_preferred_time_rehearsal,
+                performance_preferred_time, performance_description);
     }
+
 }
