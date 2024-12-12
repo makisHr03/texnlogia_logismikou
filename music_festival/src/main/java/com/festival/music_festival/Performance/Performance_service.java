@@ -28,10 +28,16 @@ public class Performance_service {
 
     // post
     public void add_new_student(Performance performance) {
-        Optional<Performance> Performance_optional = performance_repository
+        Optional<Performance> performance_optional = performance_repository
                 .find_Performance_by_name(performance.getPerformance_name());
-        if (Performance_optional.isPresent()) {
-            throw new IllegalStateException("Name taken");
+        if (performance_optional.isPresent()) {
+            Performance existingPerformance = performance_optional.get();
+            String currentFestivalId = performance.getFestival_name();
+            if (Objects.equals(existingPerformance.getFestival_name(), currentFestivalId)) {
+                throw new IllegalStateException("The name is already taken for this festival");
+            } else {
+                performance.setPerformance_name(performance.getPerformance_name());
+            }
         }
         performance_repository.save(performance);
     }
