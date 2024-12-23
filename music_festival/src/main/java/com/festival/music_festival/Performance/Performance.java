@@ -1,228 +1,214 @@
 package com.festival.music_festival.Performance;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
-import java.sql.Timestamp;
+import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import org.hibernate.annotations.CreationTimestamp;
+import java.util.List;
+
 
 @Entity
-@Table
+@Table(name = "performance")
 public class Performance {
     @Id
-    @SequenceGenerator(name = "performance_sequence", sequenceName = "performance_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "performance_sequence")
-    private Long performace_id;
+    @SequenceGenerator(name = "performance_sequence", sequenceName = "performance_sequence", allocationSize = 1)
+    private Long performanceId;
 
-    private String festival_name;
-    private String performance_name;
-    private String performance_creator_name;
-    private String performance_group_names;
-    private LocalDate performance_date;
-    private String performance_type;
-    private int performance_duration;
-    private String performance_technical_requirements;
-    private String performance_merchandise_items;
-
-    public void setPerformace_id(Long performace_id) {
-        this.performace_id = performace_id;
-    }
-
-    private ArrayList<String> performance_song_list;
-    private ArrayList<LocalDateTime> performance_preferred_time_rehearsal;
-    private ArrayList<LocalDateTime> performance_preferred_time;
+    private String festivalName;
+    private String performanceName;
+    private String performanceCreatorName;
+    private List<String> performanceGroupNames;
+    private LocalDate performanceDate;
+    private String performanceType;
+    private int performanceDuration;
+    private String performanceTechnicalRequirements;
+    private String performanceMerchandiseItems;
+    private List<String> performanceSongList;
+    private LocalDateTime performancePreferredTimeRehearsal;
+    private LocalDateTime performancePreferredTime;
+    private String performanceDescription;
+    private List<String> kalitexnes = new ArrayList<>();
 
     @CreationTimestamp
-    private Timestamp performance_creasion_date;
+    private LocalDateTime performanceCreationDate;
 
-    private String performance_description;
-
-    // Default constructor
     public Performance() {
     }
 
-    // Main constractor
-    public Performance(String festival_name, String performance_name, String performance_creator_name,
-            String performance_group_names, LocalDate performance_date, String performance_type,
-            int performance_duration,
-            String performance_technical_requirements, String performance_merchandise_items,
-            ArrayList<String> performance_song_list, ArrayList<LocalDateTime> performance_preferred_time_rehearsal,
-            ArrayList<LocalDateTime> performance_preferred_time, String performance_description) {
-        this.festival_name = festival_name;
-        this.performance_name = performance_name;
-        this.performance_creator_name = performance_creator_name;
-        this.performance_group_names = performance_group_names;
-        this.performance_date = performance_date;
-        this.performance_type = performance_type;
-        this.performance_duration = performance_duration;
-        this.performance_technical_requirements = performance_technical_requirements;
-        this.performance_merchandise_items = performance_merchandise_items;
-        this.performance_song_list = performance_song_list;
-        this.performance_preferred_time_rehearsal = performance_preferred_time_rehearsal;
-        this.performance_preferred_time = performance_preferred_time;
-        this.performance_description = performance_description;
+    public Performance(String festivalName, String performanceName, String performanceCreatorName,
+                       List<String> performanceGroupNames, LocalDate performanceDate, String performanceType,
+                       int performanceDuration, String performanceTechnicalRequirements,
+                       String performanceMerchandiseItems, List<String> performanceSongList,
+                       LocalDateTime performancePreferredTimeRehearsal, LocalDateTime performancePreferredTime,
+                       String performanceDescription) {
+        this.festivalName = festivalName;
+        this.performanceName = performanceName;
+        this.performanceCreatorName = performanceCreatorName;
+        this.performanceGroupNames = performanceGroupNames;
+        this.performanceDate = performanceDate;
+        this.performanceType = performanceType;
+        this.performanceDuration = performanceDuration;
+        this.performanceTechnicalRequirements = performanceTechnicalRequirements;
+        this.performanceMerchandiseItems = performanceMerchandiseItems;
+        this.performanceSongList = performanceSongList;
+        this.performancePreferredTimeRehearsal = performancePreferredTimeRehearsal;
+        this.performancePreferredTime = performancePreferredTime;
+        this.performanceDescription = performanceDescription;
+
+        this.kalitexnes.add(performanceCreatorName);
     }
 
-    // for delete
-    public Performance(
-            Long performace_id, String festival_name, String performance_name, String performance_creator_name,
-            String performance_group_names, LocalDate performance_date, String performance_type,
-            int performance_duration,
-            String performance_technical_requirements, String performance_merchandise_items,
-            ArrayList<String> performance_song_list, ArrayList<LocalDateTime> performance_preferred_time_rehearsal,
-            ArrayList<LocalDateTime> performance_preferred_time, Timestamp performance_creasion_date,
-            String performance_description) {
-        this.performace_id = performace_id;
-        this.festival_name = festival_name;
-        this.performance_name = performance_name;
-        this.performance_creator_name = performance_creator_name;
-        this.performance_group_names = performance_group_names;
-        this.performance_date = performance_date;
-        this.performance_type = performance_type;
-        this.performance_duration = performance_duration;
-        this.performance_technical_requirements = performance_technical_requirements;
-        this.performance_merchandise_items = performance_merchandise_items;
-        this.performance_song_list = performance_song_list;
-        this.performance_preferred_time_rehearsal = performance_preferred_time_rehearsal;
-        this.performance_preferred_time = performance_preferred_time;
-        this.performance_creasion_date = performance_creasion_date;
-        this.performance_description = performance_description;
+
+    public String getFestivalName() {
+        return festivalName;
     }
 
-    public Long getPerformace_id() {
-        return performace_id;
+    public void setFestivalName(String festivalName) {
+        this.festivalName = festivalName;
     }
 
-    public String getFestival_name() {
-        return festival_name;
+    public String getPerformanceName() {
+        return performanceName;
     }
 
-    public void setFestival_name(String festival_name) {
-        this.festival_name = festival_name;
+    public void setPerformanceName(String performanceName) {
+        this.performanceName = performanceName;
     }
 
-    public String getPerformance_name() {
-        return performance_name;
+    public String getPerformanceCreatorName() {
+        return performanceCreatorName;
     }
 
-    public void setPerformance_name(String performance_name) {
-        this.performance_name = performance_name;
+    public void setPerformanceCreatorName(String performanceCreatorName) {
+        this.performanceCreatorName = performanceCreatorName;
     }
 
-    public String getPerformance_creator_name() {
-        return performance_creator_name;
+    public List<String> getPerformanceGroupNames() {
+        return performanceGroupNames;
     }
 
-    public void setPerformance_creator_name(String performance_creator_name) {
-        this.performance_creator_name = performance_creator_name;
+    public void setPerformanceGroupNames(List<String> performanceGroupNames) {
+        this.performanceGroupNames = performanceGroupNames;
     }
 
-    public String getPerformance_group_names() {
-        return performance_group_names;
+    public LocalDate getPerformanceDate() {
+        return performanceDate;
     }
 
-    public void setPerformance_group_names(String performance_group_names) {
-        this.performance_group_names = performance_group_names;
+    public void setPerformanceDate(LocalDate performanceDate) {
+        this.performanceDate = performanceDate;
     }
 
-    public LocalDate getPerformance_date() {
-        return performance_date;
+    public String getPerformanceType() {
+        return performanceType;
     }
 
-    public void setPerformance_date(LocalDate performance_date) {
-        this.performance_date = performance_date;
+    public void setPerformanceType(String performanceType) {
+        this.performanceType = performanceType;
     }
 
-    public String getPerformance_type() {
-        return performance_type;
+    public int getPerformanceDuration() {
+        return performanceDuration;
     }
 
-    public void setPerformance_type(String performance_type) {
-        this.performance_type = performance_type;
+    public void setPerformanceDuration(int performanceDuration) {
+        this.performanceDuration = performanceDuration;
     }
 
-    public int getPerformance_duration() {
-        return performance_duration;
+    public String getPerformanceTechnicalRequirements() {
+        return performanceTechnicalRequirements;
     }
 
-    public void setPerformance_duration(int performance_duration) {
-        this.performance_duration = performance_duration;
+    public void setPerformanceTechnicalRequirements(String performanceTechnicalRequirements) {
+        this.performanceTechnicalRequirements = performanceTechnicalRequirements;
     }
 
-    public String getPerformance_technical_requirements() {
-        return performance_technical_requirements;
+    public String getPerformanceMerchandiseItems() {
+        return performanceMerchandiseItems;
     }
 
-    public void setPerformance_technical_requirements(String performance_technical_requirements) {
-        this.performance_technical_requirements = performance_technical_requirements;
+    public void setPerformanceMerchandiseItems(String performanceMerchandiseItems) {
+        this.performanceMerchandiseItems = performanceMerchandiseItems;
     }
 
-    public String getPerformance_merchandise_items() {
-        return performance_merchandise_items;
+    public List<String> getPerformanceSongList() {
+        return performanceSongList;
     }
 
-    public void setPerformance_merchandise_items(String performance_merchandise_items) {
-        this.performance_merchandise_items = performance_merchandise_items;
+    public void setPerformanceSongList(List<String> performanceSongList) {
+        this.performanceSongList = performanceSongList;
     }
 
-    public ArrayList<String> getPerformance_song_list() {
-        return performance_song_list;
+    public LocalDateTime getPerformancePreferredTimeRehearsal() {
+        return performancePreferredTimeRehearsal;
     }
 
-    public void setPerformance_song_list(ArrayList<String> performance_song_list) {
-        this.performance_song_list = performance_song_list;
+    public void setPerformancePreferredTimeRehearsal(LocalDateTime performancePreferredTimeRehearsal) {
+        this.performancePreferredTimeRehearsal = performancePreferredTimeRehearsal;
     }
 
-    public ArrayList<LocalDateTime> getPerformance_preferred_time_rehearsal() {
-        return performance_preferred_time_rehearsal;
+    public LocalDateTime getPerformancePreferredTime() {
+        return performancePreferredTime;
     }
 
-    public void setPerformance_preferred_time_rehearsal(ArrayList<LocalDateTime> performance_preferred_time_rehearsal) {
-        this.performance_preferred_time_rehearsal = performance_preferred_time_rehearsal;
+    public void setPerformancePreferredTime(LocalDateTime performancePreferredTime) {
+        this.performancePreferredTime = performancePreferredTime;
     }
 
-    public ArrayList<LocalDateTime> getPerformance_preferred_time() {
-        return performance_preferred_time;
+    public String getPerformanceDescription() {
+        return performanceDescription;
     }
 
-    public void setPerformance_preferred_time(ArrayList<LocalDateTime> performance_preferred_time) {
-        this.performance_preferred_time = performance_preferred_time;
+    public void setPerformanceDescription(String performanceDescription) {
+        this.performanceDescription = performanceDescription;
     }
 
-    public Timestamp getPerformance_creasion_date() {
-        return performance_creasion_date;
+    public List<String> getKalitexnes() {
+        return kalitexnes;
     }
 
-    public void setPerformance_creasion_date(Timestamp performance_creasion_date) {
-        this.performance_creasion_date = performance_creasion_date;
+    public void setKalitexnes(List<String> kalitexnes) {
+        this.kalitexnes = kalitexnes;
     }
 
-    public String getPerformance_description() {
-        return performance_description;
+    public LocalDateTime getPerformanceCreationDate() {
+        return performanceCreationDate;
     }
 
-    public void setPerformance_description(String performance_description) {
-        this.performance_description = performance_description;
+    public void setPerformanceCreationDate(LocalDateTime performanceCreationDate) {
+        this.performanceCreationDate = performanceCreationDate;
     }
+
+    public void addKalitexnes(String kalitenxis) {
+        if (kalitexnes == null) {
+            kalitexnes = new ArrayList<>();
+        }
+        this.kalitexnes.add(kalitenxis);
+    }
+
 
     @Override
     public String toString() {
-        return "Performance [performace_id=" + performace_id + ", festival_name="
-                + festival_name + ", performance_name=" + performance_name + ", performance_creator_name="
-                + performance_creator_name + ", performance_group_names=" + performance_group_names
-                + ", performance_date=" + performance_date + ", performance_type=" + performance_type
-                + ", performance_duration=" + performance_duration + ", performance_technical_requirements="
-                + performance_technical_requirements + ", performance_merchandise_items="
-                + performance_merchandise_items + ", performance_song_list=" + performance_song_list
-                + ", performance_preferred_time_rehearsal=" + performance_preferred_time_rehearsal
-                + ", performance_preferred_time=" + performance_preferred_time + ", performance_creasion_date="
-                + performance_creasion_date + ", performance_description=" + performance_description + "]";
+        return "Performance{" +
+                "performanceId=" + performanceId +
+                ", festivalName='" + festivalName + '\'' +
+                ", performanceName='" + performanceName + '\'' +
+                ", performanceCreatorName='" + performanceCreatorName + '\'' +
+                ", performanceGroupNames=" + performanceGroupNames +
+                ", performanceDate=" + performanceDate +
+                ", performanceType='" + performanceType + '\'' +
+                ", performanceDuration=" + performanceDuration +
+                ", performanceTechnicalRequirements='" + performanceTechnicalRequirements + '\'' +
+                ", performanceMerchandiseItems='" + performanceMerchandiseItems + '\'' +
+                ", performanceSongList=" + performanceSongList +
+                ", performancePreferredTimeRehearsal=" + performancePreferredTimeRehearsal +
+                ", performancePreferredTime=" + performancePreferredTime +
+                ", performanceDescription='" + performanceDescription + '\'' +
+                ", kalitexnes=" + kalitexnes +
+                ", performanceCreationDate=" + performanceCreationDate +
+                '}';
     }
-
 }
