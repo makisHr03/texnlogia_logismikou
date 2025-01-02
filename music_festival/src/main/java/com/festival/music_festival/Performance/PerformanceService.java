@@ -27,6 +27,7 @@ public class PerformanceService {
     // post
     public void addNewPerformance(Performance performance) {
 
+        // Check if a performance with the same name already exists for the same festival
         Optional<Performance> performanceOptional = PerformanceRepository
                 .findPerformanceByName(performance.getPerformanceName());
         if (performanceOptional.isPresent()) {
@@ -34,19 +35,25 @@ public class PerformanceService {
             String currentFestivalId = performance.getFestivalName();
             if (Objects.equals(existingPerformance.getFestivalName(), currentFestivalId)) {
                 throw new IllegalStateException("The performance name is already taken for this festival");
-            } else {
-                performance.setPerformanceName(performance.getPerformanceName());
             }
         }
 
+        // Set default status if not already set
+        if (performance.getPerformanceStatus() == null || performance.getPerformanceStatus().trim().isEmpty()) {
+            performance.setPerformanceStatus("CREATED");
+        }
+
+        // Initialize kalitexnes list if null
         if (performance.getKalitexnes() == null) {
             performance.setKalitexnes(new ArrayList<>());
         }
 
+        // Add the creator to the kalitexnes list if not already present
         if (!performance.getKalitexnes().contains(performance.getPerformanceCreatorName())) {
             performance.getKalitexnes().add(performance.getPerformanceCreatorName());
         }
 
+        // Save the new performance to the repository
         PerformanceRepository.save(performance);
     }
 
@@ -172,5 +179,96 @@ public class PerformanceService {
             performance.addKalitexnes(kalitexnis);
         }
     }
+
+    // put submit
+    @Transactional
+    public void submit(Long performanceId) {
+        Performance performance = PerformanceRepository.findById(performanceId)
+                .orElseThrow(() -> new IllegalStateException("Performance not found with id: " + performanceId));
+
+
+        if ("SUBMITTED".equals(performance.getPerformanceStatus())) {
+            throw new IllegalStateException("The festival is already in a SUBMITTED state.");
+        }
+
+        if (performance.getPerformanceName() == null || performance.getPerformanceName().trim().isEmpty() ||
+                performance.getPerformanceDescription() == null || performance.getPerformanceDescription().trim().isEmpty() ||
+                performance.getPerformanceType() == null || performance.getPerformanceType().trim().isEmpty() ||
+                performance.getPerformanceDuration() <= 0 ||
+                performance.getPerformanceGroupNames() == null || performance.getPerformanceGroupNames().isEmpty() ||
+                performance.getPerformanceTechnicalRequirements() == null || performance.getPerformanceTechnicalRequirements().trim().isEmpty() ||
+                performance.getPerformanceMerchandiseItems() == null || performance.getPerformanceMerchandiseItems().trim().isEmpty() ||
+                performance.getPerformanceSongList() == null || performance.getPerformanceSongList().isEmpty() ||
+                performance.getPerformancePreferredTimeRehearsal() == null ||
+                performance.getPerformancePreferredTime() == null) {
+            throw new IllegalStateException("The performance details are incomplete. All fields must be filled.");
+        }
+
+        // Submit the performance
+        performance.submitPerformance();
+
+    }
+
+    // Del withdrawal
+    public void withdrawal(Long performanceId, String performanceCreatorName) {
+        // Retrieve the performance by ID or throw an exception if not found
+        Performance performance = PerformanceRepository.findById(performanceId)
+                .orElseThrow(() -> new IllegalStateException("Performance not found with id: " + performanceId));
+
+        // Check if the requester is the creator or a member of the kalitexnes
+        if (!Objects.equals(performance.getPerformanceCreatorName(), performanceCreatorName) &&
+                !performance.getKalitexnes().contains(performanceCreatorName)) {
+            throw new IllegalStateException("Only the performance creator or existing kalitexnes members can withdraw the performance.");
+        }
+
+        // Prevent withdrawal if the performance is already submitted
+        if ("SUBMITTED".equalsIgnoreCase(performance.getPerformanceStatus())) {
+            throw new IllegalStateException("The performance is already in a SUBMITTED state and cannot be withdrawn.");
+        }
+
+        // Delete the performance
+        PerformanceRepository.deleteById(performanceId);
+    }
+
+    // put staff
+    @Transactional
+    public void setStaff(Long performanceId, String staffName) {
+        Performance performance = PerformanceRepository.findById(performanceId)
+                .orElseThrow(() -> new IllegalStateException("Performance not found with id: " + performanceId));
+
+        // Submit the performance
+        performance.setStaff(staffName);
+
+    }
+
+    // put review
+    @Transactional
+    public void reviewState(Long performanceId) {
+        Performance performance = PerformanceRepository.findById(performanceId)
+                .orElseThrow(() -> new IllegalStateException("Performance not found with id: " + performanceId));
+
+        if ("REVIEW".equals(performance.getPerformanceStatus())) {
+            throw new IllegalStateException("The performance is already in a Review state.");
+        }
+        performance.reviewPerformance();
+    }
+
+    // put review
+    @Transactional
+    public void review(Long performanceId, String staffName, float score, String scoreDetails) {
+        Performance performance = PerformanceRepository.findById(performanceId)
+                .orElseThrow(() -> new IllegalStateException("Performance not found with id: " + performanceId));
+
+        if (!Objects.equals(performance.getStaff(), staffName)) {
+            throw new IllegalStateException("Only the staff can review the performance.");
+        }
+
+        if (!"REVIEW".equals(performance.getPerformanceStatus())) {
+            throw new IllegalStateException("The performance is not in a Review state.");
+        }
+
+        performance.createReview(score, scoreDetails);
+    }
+
 
 }
