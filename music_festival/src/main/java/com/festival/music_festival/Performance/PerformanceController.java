@@ -69,5 +69,47 @@ public class PerformanceController {
         PerformanceService.addKalitexnes(performanceId, kalitexnis, performanceCreatorName);
     }
 
+    //put-submit-state
+    @PutMapping(path = "{performanceId}/submitState")
+    public void submitPerformance(
+            @PathVariable("performanceId") Long performanceId) {
+        PerformanceService.submit(performanceId);
 
+    }
+
+    //del withdrawal
+    @DeleteMapping(path = "{performanceId}/withdrawal")
+    public void withdrawal(
+            @PathVariable("performanceId") Long performanceId,
+            @RequestParam(required = false) String kalitexnis) {
+        PerformanceService.withdrawal(performanceId, kalitexnis);
+    }
+
+    //put-staff
+    @PutMapping(path = "{performanceId}/staff")
+    public void setStaff(
+            @PathVariable("performanceId") Long performanceId,
+            @RequestParam(required = false) String staffName) {
+        PerformanceService.setStaff(performanceId, staffName);
+
+    }
+
+    //put-review-state
+    @PutMapping(path = "{performanceId}/reviewState")
+    public void reviewState(
+            @PathVariable("performanceId") Long performanceId) {
+        PerformanceService.reviewState(performanceId);
+
+    }
+
+    //put-review
+    @PutMapping(path = "{performanceId}/review")
+    public void reviewPerformance(
+            @PathVariable("performanceId") Long performanceId,
+            @RequestParam(required = false) String staffName,
+            @RequestParam(required = false) float score,
+            @RequestParam(required = false) String scoreDetail) {
+        PerformanceService.review(performanceId, staffName, score, scoreDetail);
+
+    }
 }

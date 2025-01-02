@@ -31,6 +31,10 @@ public class Performance {
     private LocalDateTime performancePreferredTime;
     private String performanceDescription;
     private List<String> kalitexnes = new ArrayList<>();
+    private String performanceStatus;
+    private String staff;
+    private float score;
+    private String scoreDetail;
 
     @CreationTimestamp
     private LocalDateTime performanceCreationDate;
@@ -57,6 +61,7 @@ public class Performance {
         this.performancePreferredTimeRehearsal = performancePreferredTimeRehearsal;
         this.performancePreferredTime = performancePreferredTime;
         this.performanceDescription = performanceDescription;
+        this.performanceStatus = "CREATED";
 
         this.kalitexnes.add(performanceCreatorName);
     }
@@ -189,6 +194,58 @@ public class Performance {
         this.kalitexnes.add(kalitenxis);
     }
 
+    public String getPerformanceStatus() {
+        return performanceStatus;
+    }
+
+    public void setPerformanceStatus(String performanceStatus) {
+        this.performanceStatus = performanceStatus;
+    }
+
+    public String getStaff() {
+        return staff;
+    }
+
+    public void setStaff(String staff) {
+        this.staff = staff;
+    }
+
+    public void submitPerformance(){
+        this.performanceStatus="SUBMITTED";
+    }
+
+    public void reviewPerformance(){
+        this.performanceStatus="REVIEW";
+    }
+
+    public void createReview(float score, String scoreDetail){
+        this.score = score;
+        this.scoreDetail = scoreDetail;
+    }
+
+    public float getScore() {
+        return score;
+    }
+
+    public void setScore(float score) {
+        this.score = score;
+    }
+
+    public String getScoreDetail() {
+        return scoreDetail;
+    }
+
+    public void setScoreDetail(String scoreDetail) {
+        this.scoreDetail = scoreDetail;
+    }
+
+    public Long getPerformanceId() {
+        return performanceId;
+    }
+
+    public void setPerformanceId(Long performanceId) {
+        this.performanceId = performanceId;
+    }
 
     @Override
     public String toString() {
@@ -208,6 +265,10 @@ public class Performance {
                 ", performancePreferredTime=" + performancePreferredTime +
                 ", performanceDescription='" + performanceDescription + '\'' +
                 ", kalitexnes=" + kalitexnes +
+                ", performanceStatus='" + performanceStatus + '\'' +
+                ", staff='" + staff + '\'' +
+                ", score=" + score +
+                ", scoreDetail='" + scoreDetail + '\'' +
                 ", performanceCreationDate=" + performanceCreationDate +
                 '}';
     }
