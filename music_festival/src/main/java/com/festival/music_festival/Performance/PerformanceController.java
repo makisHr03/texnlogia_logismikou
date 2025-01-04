@@ -110,6 +110,43 @@ public class PerformanceController {
             @RequestParam(required = false) float score,
             @RequestParam(required = false) String scoreDetail) {
         PerformanceService.review(performanceId, staffName, score, scoreDetail);
-
     }
+
+    //put-scheduling-state
+    @PutMapping(path = "{performanceId}/schedulingState")
+    public void schedulingPerformance(
+            @PathVariable("performanceId") Long performanceId) {
+        PerformanceService.scheduling(performanceId);
+    }
+
+    //put-approval-state
+    @PutMapping(path = "{performanceId}/approvalState")
+    public void approvalPerformance(
+            @PathVariable("performanceId") Long performanceId) {
+        PerformanceService.approval(performanceId);
+    }
+
+    //put-final_Sumbision
+    @PutMapping(path = "{performanceId}/finalSumbision")
+    public void finalSumbision(
+            @PathVariable("performanceId") Long performanceId) {
+        PerformanceService.finalSumbision(performanceId);
+    }
+
+    //put add organizer
+    @PutMapping(path = "{performanceId}/addOrganizer")
+    public void addOrganizer(
+            @PathVariable("performanceId") Long performanceId,
+            @RequestParam(required = false) String organizerName) {
+        PerformanceService.addOrganizer(performanceId, organizerName);
+    }
+
+    //put festival status DECISION
+    @PutMapping(path = "{performanceId}/festivalDecision")
+    public void festivalDecision(
+            @PathVariable("performanceId") Long performanceId) {
+        PerformanceService.festivalDecision(performanceId);
+    }
+
+
 }
