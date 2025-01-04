@@ -17,7 +17,6 @@ public class Performance {
     @SequenceGenerator(name = "performance_sequence", sequenceName = "performance_sequence", allocationSize = 1)
     private Long performanceId;
 
-    private String festivalName;
     private String performanceName;
     private String performanceCreatorName;
     private List<String> performanceGroupNames;
@@ -35,6 +34,11 @@ public class Performance {
     private String staff;
     private float score;
     private String scoreDetail;
+    private List<String> organizer;
+
+    private String festivalName;
+    private String FestivalStatus;
+
 
     @CreationTimestamp
     private LocalDateTime performanceCreationDate;
@@ -246,6 +250,46 @@ public class Performance {
     public void setPerformanceId(Long performanceId) {
         this.performanceId = performanceId;
     }
+
+    public void scedulingPerformance(){
+        this.performanceStatus = "SCHEDULING";
+    }
+
+    public void approvalPerformance(){
+        this.performanceStatus = "APPROVAL";
+    }
+
+    public void finalSubmission(){
+        this.performanceStatus = "FINAL_SUBMISSION";
+    }
+
+    public List<String> getOrganizer() {
+        return organizer;
+    }
+
+    public void setOrganizer(String organizerName) {
+        if (organizer == null) {
+            organizer = new ArrayList<>();
+        }
+        this.organizer.add(organizerName);
+    }
+
+    public String getFestivalStatus() {
+        return FestivalStatus;
+    }
+
+    public void setFestivalStatus(String festivalStatus) {
+        FestivalStatus = festivalStatus;
+    }
+
+    public void setOrganizer(List<String> organizer) {
+        this.organizer = organizer;
+    }
+
+    public void FestivalStatusDecision() {
+        this.FestivalStatus = "DECISION";
+    }
+
 
     @Override
     public String toString() {

@@ -80,6 +80,11 @@ public class PerformanceService {
         Performance performance = PerformanceRepository.findById(performanceId)
                 .orElseThrow(() -> new IllegalStateException("Performance not found with id: " + performanceId));
 
+
+        if ("FINAL_SUBMISSION".equals(performance.getPerformanceStatus())) {
+            throw new IllegalStateException("The performance is on FINAL_SUBMISSION state, you can not change anything.");
+        }
+
         if (!Objects.equals(performance.getPerformanceCreatorName(), performanceCreatorName) &&
                 !performance.getKalitexnes().contains(performanceCreatorName)) {
             throw new IllegalStateException("Only the performance creator or existing kalitexnes members can update the performance.");
@@ -188,25 +193,27 @@ public class PerformanceService {
 
 
         if ("SUBMITTED".equals(performance.getPerformanceStatus())) {
-            throw new IllegalStateException("The festival is already in a SUBMITTED state.");
+            throw new IllegalStateException("The performance is already in a SUBMITTED state.");
         }
 
-        if (performance.getPerformanceName() == null || performance.getPerformanceName().trim().isEmpty() ||
-                performance.getPerformanceDescription() == null || performance.getPerformanceDescription().trim().isEmpty() ||
-                performance.getPerformanceType() == null || performance.getPerformanceType().trim().isEmpty() ||
-                performance.getPerformanceDuration() <= 0 ||
-                performance.getPerformanceGroupNames() == null || performance.getPerformanceGroupNames().isEmpty() ||
-                performance.getPerformanceTechnicalRequirements() == null || performance.getPerformanceTechnicalRequirements().trim().isEmpty() ||
-                performance.getPerformanceMerchandiseItems() == null || performance.getPerformanceMerchandiseItems().trim().isEmpty() ||
-                performance.getPerformanceSongList() == null || performance.getPerformanceSongList().isEmpty() ||
-                performance.getPerformancePreferredTimeRehearsal() == null ||
-                performance.getPerformancePreferredTime() == null) {
-            throw new IllegalStateException("The performance details are incomplete. All fields must be filled.");
+        if ("CREATED".equals(performance.getPerformanceStatus())) {
+
+            if (performance.getPerformanceName() == null || performance.getPerformanceName().trim().isEmpty() ||
+                    performance.getPerformanceDescription() == null || performance.getPerformanceDescription().trim().isEmpty() ||
+                    performance.getPerformanceType() == null || performance.getPerformanceType().trim().isEmpty() ||
+                    performance.getPerformanceDuration() <= 0 ||
+                    performance.getPerformanceGroupNames() == null || performance.getPerformanceGroupNames().isEmpty() ||
+                    performance.getPerformanceTechnicalRequirements() == null || performance.getPerformanceTechnicalRequirements().trim().isEmpty() ||
+                    performance.getPerformanceMerchandiseItems() == null || performance.getPerformanceMerchandiseItems().trim().isEmpty() ||
+                    performance.getPerformanceSongList() == null || performance.getPerformanceSongList().isEmpty() ||
+                    performance.getPerformancePreferredTimeRehearsal() == null ||
+                    performance.getPerformancePreferredTime() == null) {
+                throw new IllegalStateException("The performance details are incomplete. All fields must be filled.");
+            }
+            performance.submitPerformance();
+        } else {
+            throw new IllegalStateException("The performance has been pass the SUBMITTED state.");
         }
-
-        // Submit the performance
-        performance.submitPerformance();
-
     }
 
     // Del withdrawal
@@ -226,8 +233,12 @@ public class PerformanceService {
             throw new IllegalStateException("The performance is already in a SUBMITTED state and cannot be withdrawn.");
         }
 
-        // Delete the performance
-        PerformanceRepository.deleteById(performanceId);
+        if ("CREATED".equalsIgnoreCase(performance.getPerformanceStatus())) {
+            // Delete the performance
+            PerformanceRepository.deleteById(performanceId);
+        } else {
+            throw new IllegalStateException("The performance can not delete on this state.");
+        }
     }
 
     // put staff
@@ -235,10 +246,7 @@ public class PerformanceService {
     public void setStaff(Long performanceId, String staffName) {
         Performance performance = PerformanceRepository.findById(performanceId)
                 .orElseThrow(() -> new IllegalStateException("Performance not found with id: " + performanceId));
-
-        // Submit the performance
         performance.setStaff(staffName);
-
     }
 
     // put review
@@ -250,8 +258,9 @@ public class PerformanceService {
         if ("REVIEW".equals(performance.getPerformanceStatus())) {
             throw new IllegalStateException("The performance is already in a Review state.");
         }
-        performance.reviewPerformance();
+            performance.reviewPerformance();
     }
+
 
     // put review
     @Transactional
@@ -269,6 +278,88 @@ public class PerformanceService {
 
         performance.createReview(score, scoreDetails);
     }
+
+    // put scheduling
+    @Transactional
+    public void scheduling(Long performanceId) {
+        Performance performance = PerformanceRepository.findById(performanceId)
+                .orElseThrow(() -> new IllegalStateException("Performance not found with id: " + performanceId));
+
+        if ("SCHEDULING ".equals(performance.getPerformanceStatus())) {
+            throw new IllegalStateException("The festival is already in a SCHEDULING  state.");
+        }
+        performance.scedulingPerformance();
+    }
+
+    // put approval
+    @Transactional
+    public void approval(Long performanceId) {
+        Performance performance = PerformanceRepository.findById(performanceId)
+                .orElseThrow(() -> new IllegalStateException("Performance not found with id: " + performanceId));
+
+        if ("APPROVAL".equals(performance.getPerformanceStatus())) {
+            throw new IllegalStateException("The festival is already in a APPROVAL  state.");
+        }
+
+        if (!"SCHEDULING".equals(performance.getPerformanceStatus())) {
+            throw new IllegalStateException("The festival must be in a SCHEDULING state first and after on approval state.");
+        }
+
+        performance.approvalPerformance();
+    }
+
+    // put final_Sumbision
+    @Transactional
+    public void finalSumbision(Long performanceId) {
+        Performance performance = PerformanceRepository.findById(performanceId)
+                .orElseThrow(() -> new IllegalStateException("Performance not found with id: " + performanceId));
+
+
+        if ("FINAL_SUBMISSION".equals(performance.getPerformanceStatus())) {
+            throw new IllegalStateException("The festival is already in a FINAL_SUBMISSION state.");
+        }
+
+        if (performance.getPerformanceName() == null || performance.getPerformanceName().trim().isEmpty() ||
+                performance.getPerformanceDescription() == null || performance.getPerformanceDescription().trim().isEmpty() ||
+                performance.getPerformanceType() == null || performance.getPerformanceType().trim().isEmpty() ||
+                performance.getPerformanceDuration() <= 0 ||
+                performance.getPerformanceGroupNames() == null || performance.getPerformanceGroupNames().isEmpty() ||
+                performance.getPerformanceTechnicalRequirements() == null || performance.getPerformanceTechnicalRequirements().trim().isEmpty() ||
+                performance.getPerformanceMerchandiseItems() == null || performance.getPerformanceMerchandiseItems().trim().isEmpty() ||
+                performance.getPerformanceSongList() == null || performance.getPerformanceSongList().isEmpty() ||
+                performance.getPerformancePreferredTimeRehearsal() == null ||
+                performance.getPerformancePreferredTime() == null) {
+
+            throw new IllegalStateException("The performance details are incomplete. The performance are out of the festival.");
+        }
+
+        performance.finalSubmission();
+
+    }
+
+    //put-addOrganizer
+    @Transactional
+    public void addOrganizer(Long performanceId, String organizerName) {
+
+        Performance performance = PerformanceRepository.findById(performanceId)
+                .orElseThrow(() -> new IllegalStateException("Performance not found with id: " + performanceId));
+
+        performance.setOrganizer(organizerName);
+
+    }
+
+    //put-addOrganizer
+    @Transactional
+    public void festivalDecision(Long performanceId) {
+
+        Performance performance = PerformanceRepository.findById(performanceId)
+                .orElseThrow(() -> new IllegalStateException("Performance not found with id: " + performanceId));
+
+        performance.FestivalStatusDecision();
+
+    }
+
+
 
 
 }
