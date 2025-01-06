@@ -34,7 +34,8 @@ public class Performance {
     private String staff;
     private float score;
     private String scoreDetail;
-    private List<String> organizer;
+    private List<String> organizer = new ArrayList<>();
+    private String rejectionReason;
 
     private String festivalName;
     private String FestivalStatus;
@@ -290,6 +291,21 @@ public class Performance {
         this.FestivalStatus = "DECISION";
     }
 
+    public void rejectionPerformance(){
+        this.performanceStatus = "REJECTION";
+    }
+
+    public String getRejectionReason() {
+        return rejectionReason;
+    }
+
+    public void setRejectionReason(String rejectionReason) {
+        this.rejectionReason = rejectionReason;
+    }
+
+    public void performanceAcceptance() {
+        this.performanceStatus = "ACCEPTANCE";
+    }
 
     @Override
     public String toString() {

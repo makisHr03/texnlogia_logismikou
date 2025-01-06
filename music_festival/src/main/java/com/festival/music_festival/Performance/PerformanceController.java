@@ -148,5 +148,20 @@ public class PerformanceController {
         PerformanceService.festivalDecision(performanceId);
     }
 
+    //put Performance status rejection
+    @PutMapping(path = "{performanceId}/performanceManualRejection")
+    public void performanceRejection(
+            @PathVariable("performanceId") Long performanceId,
+            @RequestParam(required = false) String organizerName,
+            @RequestParam(required = false) String rejectionReason) {
+        PerformanceService.performanceRejection(performanceId, organizerName, rejectionReason);
+    }
+
+    //put Performance status acceptance
+    @PutMapping(path = "{performanceId}/performanceAcceptance")
+    public void performanceRejection(
+            @PathVariable("performanceId") Long performanceId) {
+        PerformanceService.performanceAcceptance(performanceId);
+    }
 
 }
