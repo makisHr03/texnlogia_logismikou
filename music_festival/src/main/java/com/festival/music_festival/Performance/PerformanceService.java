@@ -258,7 +258,7 @@ public class PerformanceService {
         if ("REVIEW".equals(performance.getPerformanceStatus())) {
             throw new IllegalStateException("The performance is already in a Review state.");
         }
-            performance.reviewPerformance();
+        performance.reviewPerformance();
     }
 
 
@@ -359,7 +359,48 @@ public class PerformanceService {
 
     }
 
+    //put-performanceRejection
+    @Transactional
+    public void performanceRejection(Long performanceId, String organizerName, String rejectionReason) {
 
+        Performance performance = PerformanceRepository.findById(performanceId)
+                .orElseThrow(() -> new IllegalStateException("Performance not found with id: " + performanceId));
+
+
+        if ( !performance.getOrganizer().contains(organizerName)) {
+            throw new IllegalStateException("Only the Organizer members can rejection the performance.");
+        }
+
+        if ("SCHEDULING".equals(performance.getPerformanceStatus())) {
+            throw new IllegalStateException("You can not rejection the performance on this state");
+        }
+
+        if ("DECISION".equals(performance.getPerformanceStatus())) {
+            throw new IllegalStateException("You can not rejection the performance on this state");
+        }
+
+        if (performance.getScore() < 5) {
+            performance.rejectionPerformance();
+            performance.setRejectionReason(rejectionReason);
+        } else {
+            throw new IllegalStateException("The performance have score > 5, you can not rejection it.");
+        }
+    }
+
+    //put-performanceRejection
+    @Transactional
+    public void performanceAcceptance(Long performanceId) {
+
+        Performance performance = PerformanceRepository.findById(performanceId)
+                .orElseThrow(() -> new IllegalStateException("Performance not found with id: " + performanceId));
+
+        if("DECISION".equals(performance.getFestivalStatus())){
+            performance.performanceAcceptance();
+        }else{
+            throw new IllegalStateException("The festival must be on decision state for accept the performance");
+        }
+
+    }
 
 
 }
