@@ -2,21 +2,20 @@ package com.festival.music_festival.Performance;
 
 import java.time.LocalDateTime;
 import java.util.*;
-
+import com.festival.music_festival.Festival.Festival;
+import com.festival.music_festival.Festival.FestivalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import jakarta.transaction.Transactional;
 
 @Service
 public class PerformanceService {
 
-    private final PerformanceRepository PerformanceRepository;
+    @Autowired
+    private FestivalRepository festivalRepository;
 
     @Autowired
-    public PerformanceService(PerformanceRepository PerformanceRepository) {
-        this.PerformanceRepository = PerformanceRepository;
-    }
+    private PerformanceRepository PerformanceRepository;
 
     // get
     public List<Performance> getPerformance() {
@@ -26,14 +25,23 @@ public class PerformanceService {
 
     // post
     public void addNewPerformance(Performance performance) {
+        // Check if the festival exists
+        Optional<Festival> festivalOptional = festivalRepository.findFestivalByName(performance.getFestival().getFestivalName());
+        if (festivalOptional.isEmpty()) {
+            throw new IllegalStateException("Festival with name " + performance.getFestival().getFestivalName() + " does not exist");
+        }
+
+        // Associate the existing festival with the performance
+        performance.setFestival(festivalOptional.get());
 
         // Check if a performance with the same name already exists for the same festival
         Optional<Performance> performanceOptional = PerformanceRepository
                 .findPerformanceByName(performance.getPerformanceName());
+
         if (performanceOptional.isPresent()) {
             Performance existingPerformance = performanceOptional.get();
-            String currentFestivalId = performance.getFestivalName();
-            if (Objects.equals(existingPerformance.getFestivalName(), currentFestivalId)) {
+            String currentFestivalId = performance.getFestival().getFestivalName();
+            if (Objects.equals(existingPerformance.getFestival().getFestivalName(), currentFestivalId)) {
                 throw new IllegalStateException("The performance name is already taken for this festival");
             }
         }
@@ -56,6 +64,9 @@ public class PerformanceService {
         // Save the new performance to the repository
         PerformanceRepository.save(performance);
     }
+
+
+
 
 
     // Del
@@ -92,10 +103,10 @@ public class PerformanceService {
 
         if (performanceName != null && !performanceName.trim().isEmpty() &&
                 !Objects.equals(performance.getPerformanceName(), performanceName)) {
-            String currentFestivalId = performance.getFestivalName();
+            String currentFestivalId = performance.getFestival().getFestivalName();
             PerformanceRepository.findPerformanceByName(performanceName)
                     .ifPresent(existingPerformance -> {
-                        if (Objects.equals(existingPerformance.getFestivalName(), currentFestivalId)) {
+                        if (Objects.equals(existingPerformance.getFestival().getFestivalName(), currentFestivalId)) {
                             throw new IllegalStateException("The name is already taken for this festival");
                         }
                     });
@@ -348,16 +359,16 @@ public class PerformanceService {
 
     }
 
-    //put-addOrganizer
-    @Transactional
-    public void festivalDecision(Long performanceId) {
-
-        Performance performance = PerformanceRepository.findById(performanceId)
-                .orElseThrow(() -> new IllegalStateException("Performance not found with id: " + performanceId));
-
-        performance.FestivalStatusDecision();
-
-    }
+//    //put-addOrganizer
+//    @Transactional
+//    public void festivalDecision(Long performanceId) {
+//
+//        Performance performance = PerformanceRepository.findById(performanceId)
+//                .orElseThrow(() -> new IllegalStateException("Performance not found with id: " + performanceId));
+//
+//        performance.FestivalStatusDecision();
+//
+//    }
 
     //put-performanceRejection
     @Transactional
@@ -367,7 +378,7 @@ public class PerformanceService {
                 .orElseThrow(() -> new IllegalStateException("Performance not found with id: " + performanceId));
 
 
-        if ( !performance.getOrganizer().contains(organizerName)) {
+        if (!performance.getOrganizer().contains(organizerName)) {
             throw new IllegalStateException("Only the Organizer members can rejection the performance.");
         }
 
@@ -394,9 +405,9 @@ public class PerformanceService {
         Performance performance = PerformanceRepository.findById(performanceId)
                 .orElseThrow(() -> new IllegalStateException("Performance not found with id: " + performanceId));
 
-        if("DECISION".equals(performance.getFestivalStatus())){
+        if ("DECISION".equals(performance.getFestival().getFestivalStatus())) {
             performance.performanceAcceptance();
-        }else{
+        } else {
             throw new IllegalStateException("The festival must be on decision state for accept the performance");
         }
 
@@ -404,3 +415,6 @@ public class PerformanceService {
 
 
 }
+
+
+

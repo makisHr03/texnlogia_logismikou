@@ -24,11 +24,14 @@ public class PerformanceController {
     }
 
     //post
+
+    @Autowired
+    private PerformanceService performanceService;
+
     @PostMapping
     public void registerNewPerformance(@RequestBody Performance performance) {
-        PerformanceService.addNewPerformance(performance);
+        performanceService.addNewPerformance(performance);
     }
-
 
     //del
     @DeleteMapping(path = "{performanceId}")
@@ -141,12 +144,12 @@ public class PerformanceController {
         PerformanceService.addOrganizer(performanceId, organizerName);
     }
 
-    //put festival status DECISION
-    @PutMapping(path = "{performanceId}/festivalDecision")
-    public void festivalDecision(
-            @PathVariable("performanceId") Long performanceId) {
-        PerformanceService.festivalDecision(performanceId);
-    }
+//    //put festival status DECISION
+//    @PutMapping(path = "{performanceId}/festivalDecision")
+//    public void festivalDecision(
+//            @PathVariable("performanceId") Long performanceId) {
+//        PerformanceService.festivalDecision(performanceId);
+//    }
 
     //put Performance status rejection
     @PutMapping(path = "{performanceId}/performanceManualRejection")
@@ -163,5 +166,6 @@ public class PerformanceController {
             @PathVariable("performanceId") Long performanceId) {
         PerformanceService.performanceAcceptance(performanceId);
     }
+
 
 }
