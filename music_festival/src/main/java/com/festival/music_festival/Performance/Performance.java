@@ -1,5 +1,6 @@
 package com.festival.music_festival.Performance;
 
+import com.festival.music_festival.Festival.Festival;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -16,6 +17,11 @@ public class Performance {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "performance_sequence")
     @SequenceGenerator(name = "performance_sequence", sequenceName = "performance_sequence", allocationSize = 1)
     private Long performanceId;
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "festival_id")
+    private Festival festival;
+
 
     private String performanceName;
     private String performanceCreatorName;
@@ -37,8 +43,8 @@ public class Performance {
     private List<String> organizer = new ArrayList<>();
     private String rejectionReason;
 
-    private String festivalName;
-    private String FestivalStatus;
+//    private String festivalName;
+//    private String FestivalStatus;
 
 
     @CreationTimestamp
@@ -47,13 +53,13 @@ public class Performance {
     public Performance() {
     }
 
-    public Performance(String festivalName, String performanceName, String performanceCreatorName,
+    public Performance(Festival festival, String performanceName, String performanceCreatorName,
                        List<String> performanceGroupNames, LocalDate performanceDate, String performanceType,
                        int performanceDuration, String performanceTechnicalRequirements,
                        String performanceMerchandiseItems, List<String> performanceSongList,
                        LocalDateTime performancePreferredTimeRehearsal, LocalDateTime performancePreferredTime,
                        String performanceDescription) {
-        this.festivalName = festivalName;
+        this.festival = festival;
         this.performanceName = performanceName;
         this.performanceCreatorName = performanceCreatorName;
         this.performanceGroupNames = performanceGroupNames;
@@ -72,12 +78,21 @@ public class Performance {
     }
 
 
-    public String getFestivalName() {
-        return festivalName;
+//    public String getFestivalName() {
+//        return festivalName;
+//    }
+//
+//    public void setFestivalName(String festivalName) {
+//        this.festivalName = festivalName;
+//    }
+
+    // Getters and Setters
+    public Festival getFestival() {
+        return festival;
     }
 
-    public void setFestivalName(String festivalName) {
-        this.festivalName = festivalName;
+    public void setFestival(Festival festival) {
+        this.festival = festival;
     }
 
     public String getPerformanceName() {
@@ -275,21 +290,21 @@ public class Performance {
         this.organizer.add(organizerName);
     }
 
-    public String getFestivalStatus() {
-        return FestivalStatus;
-    }
-
-    public void setFestivalStatus(String festivalStatus) {
-        FestivalStatus = festivalStatus;
-    }
+//    public String getFestivalStatus() {
+//        return FestivalStatus;
+//    }
+//
+//    public void setFestivalStatus(String festivalStatus) {
+//        FestivalStatus = festivalStatus;
+//    }
 
     public void setOrganizer(List<String> organizer) {
         this.organizer = organizer;
     }
 
-    public void FestivalStatusDecision() {
-        this.FestivalStatus = "DECISION";
-    }
+//    public void FestivalStatusDecision() {
+//        this.FestivalStatus = "DECISION";
+//    }
 
     public void rejectionPerformance(){
         this.performanceStatus = "REJECTION";
@@ -311,7 +326,7 @@ public class Performance {
     public String toString() {
         return "Performance{" +
                 "performanceId=" + performanceId +
-                ", festivalName='" + festivalName + '\'' +
+//                ", festivalName='" + festivalName + '\'' +
                 ", performanceName='" + performanceName + '\'' +
                 ", performanceCreatorName='" + performanceCreatorName + '\'' +
                 ", performanceGroupNames=" + performanceGroupNames +
