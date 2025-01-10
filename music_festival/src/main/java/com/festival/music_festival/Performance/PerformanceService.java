@@ -61,6 +61,10 @@ public class PerformanceService {
             performance.getKalitexnes().add(performance.getPerformanceCreatorName());
         }
 
+        if(performance.getFestival().getFestivalStatus().equals("CREATED")){
+            throw new IllegalStateException("The festival is in CREATED state, you can't create new performance on this festival now.");
+        }
+
         // Save the new performance to the repository
         PerformanceRepository.save(performance);
     }
@@ -359,16 +363,6 @@ public class PerformanceService {
 
     }
 
-//    //put-addOrganizer
-//    @Transactional
-//    public void festivalDecision(Long performanceId) {
-//
-//        Performance performance = PerformanceRepository.findById(performanceId)
-//                .orElseThrow(() -> new IllegalStateException("Performance not found with id: " + performanceId));
-//
-//        performance.FestivalStatusDecision();
-//
-//    }
 
     //put-performanceRejection
     @Transactional
