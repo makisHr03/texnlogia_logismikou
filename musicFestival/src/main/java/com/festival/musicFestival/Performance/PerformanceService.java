@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class PerformanceService {
@@ -21,7 +18,7 @@ public class PerformanceService {
     @Autowired
     private PerformanceRepository PerformanceRepository;
 
-    // get
+    // Get all
     public List<Performance> getPerformance() {
         return PerformanceRepository.findAll();
     }
@@ -42,7 +39,7 @@ public class PerformanceService {
         Optional<Performance> performanceOptional = PerformanceRepository
                 .findPerformanceByName(performance.getPerformanceName());
 
-        if(!"SUBMISSION".equals(performance.getFestival().getFestivalStatus())){
+        if (!"SUBMISSION".equals(performance.getFestival().getFestivalStatus())) {
             throw new IllegalStateException("The Festival is not on submission state");
         }
 
@@ -268,7 +265,7 @@ public class PerformanceService {
         Performance performance = PerformanceRepository.findById(performanceId)
                 .orElseThrow(() -> new IllegalStateException("Performance not found with id: " + performanceId));
 
-        if(!"ASSIGNMENT".equals(performance.getFestival().getFestivalStatus())){
+        if (!"ASSIGNMENT".equals(performance.getFestival().getFestivalStatus())) {
             throw new IllegalStateException("The Festival is not on assignment state.");
         }
         performance.setStaff(staffName);
@@ -318,7 +315,7 @@ public class PerformanceService {
         if ("SCHEDULING ".equals(performance.getPerformanceStatus())) {
             throw new IllegalStateException("The festival is already in a SCHEDULING  state.");
         }
-        performance.scedulingPerformance();
+        performance.schedulingState();
     }
 
     // put approval
@@ -335,16 +332,16 @@ public class PerformanceService {
             throw new IllegalStateException("The festival must be in a SCHEDULING state first and after on approval state.");
         }
 
-        performance.approvalPerformance();
+        performance.approvalState();
     }
 
     // put final_Sumbision
     @Transactional
-    public void finalSumbision(Long performanceId) {
+    public void finalSubmission(Long performanceId) {
         Performance performance = PerformanceRepository.findById(performanceId)
                 .orElseThrow(() -> new IllegalStateException("Performance not found with id: " + performanceId));
 
-        if(!"FINAL_SUBMISSION".equals(performance.getFestival().getFestivalStatus())){
+        if (!"FINAL_SUBMISSION".equals(performance.getFestival().getFestivalStatus())) {
             throw new IllegalStateException("The Festival is not on state final submission.");
         }
 
@@ -366,7 +363,7 @@ public class PerformanceService {
             throw new IllegalStateException("The performance details are incomplete.");
         }
 
-        performance.finalSubmission();
+        performance.finalSubmissionState();
 
     }
 
@@ -394,7 +391,7 @@ public class PerformanceService {
             throw new IllegalStateException("Only the Organizer members can rejection the performance.");
         }
 
-        if(!"SCHEDULING".equals(performance.getFestival().getFestivalStatus())){
+        if (!"SCHEDULING".equals(performance.getFestival().getFestivalStatus())) {
             throw new IllegalStateException("The Festival is not on scheduling state");
         }
 
@@ -407,7 +404,7 @@ public class PerformanceService {
         }
 
         if (performance.getScore() < 5) {
-            performance.rejectionPerformance();
+            performance.rejectionState();
             performance.setRejectionReason(rejectionReason);
         } else {
             throw new IllegalStateException("The performance have score > 5, you can not rejection it.");
@@ -422,11 +419,24 @@ public class PerformanceService {
                 .orElseThrow(() -> new IllegalStateException("Performance not found with id: " + performanceId));
 
         if ("DECISION".equals(performance.getFestival().getFestivalStatus())) {
-            performance.performanceAcceptance();
+            performance.acceptanceState();
         } else {
             throw new IllegalStateException("The festival must be on decision state for accept the performance");
         }
 
+    }
+
+    public List<Performance> searchPerformances(String performanceName, String performanceType) {
+        if (performanceName == null && performanceType == null) {
+            return PerformanceRepository.findAll();
+        }
+        if (performanceName == null) {
+            return PerformanceRepository.searchPerformanceByType(performanceType);
+        }
+        if (performanceType == null) {
+            return PerformanceRepository.searchPerformanceByName(performanceName);
+        }
+        return PerformanceRepository.searchPerformance(performanceName, performanceType);
     }
 
 

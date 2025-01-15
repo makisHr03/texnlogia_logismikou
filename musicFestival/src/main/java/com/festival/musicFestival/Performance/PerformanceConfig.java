@@ -19,6 +19,7 @@ public class PerformanceConfig {
     @Autowired
     private Festival festival2;  // Inject festival2 bean
 
+    // Pre set performance, for testing
     @Bean(name = "performanceCommandLineRunner")
     public CommandLineRunner commandLineRunner(PerformanceRepository repository) {
         return args -> {

@@ -1,10 +1,12 @@
 package com.festival.musicFestival.Performance;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "api/v1/performance")
@@ -17,14 +19,13 @@ public class PerformanceController {
         this.PerformanceService = PerformanceService;
     }
 
-    //get
+    // Get all
     @GetMapping
     public List<Performance> getPerformances() {
         return PerformanceService.getPerformance();
     }
 
-    //post
-
+    // Post add new performance
     @Autowired
     private PerformanceService performanceService;
 
@@ -33,13 +34,13 @@ public class PerformanceController {
         performanceService.addNewPerformance(performance);
     }
 
-    //del
-    @DeleteMapping(path = "{performanceId}")
-    public void deletePerformance(@PathVariable("performanceId") Long performanceId) {
-        PerformanceService.deletePerformance(performanceId);
-    }
+//    // Del, for testing
+//    @DeleteMapping(path = "{performanceId}")
+//    public void deletePerformance(@PathVariable("performanceId") Long performanceId) {
+//        PerformanceService.deletePerformance(performanceId);
+//    }
 
-    //put
+    // Put update performance
     @PutMapping(path = "{performanceId}")
     public void updatePerformance(
             @PathVariable("performanceId") Long performanceId,
@@ -61,7 +62,7 @@ public class PerformanceController {
                 performanceCreatorName);
     }
 
-    //put-kalitexnes
+    // Put add kalitexnes
     @PutMapping(path = "{performanceId}/addKalitexnes")
     public void addKalitexnes(
             @PathVariable("performanceId") Long performanceId,
@@ -72,15 +73,8 @@ public class PerformanceController {
         PerformanceService.addKalitexnes(performanceId, kalitexnis, performanceCreatorName);
     }
 
-    //put-submit-state
-    @PutMapping(path = "{performanceId}/submitState")
-    public void submitPerformance(
-            @PathVariable("performanceId") Long performanceId) {
-        PerformanceService.submit(performanceId);
 
-    }
-
-    //del withdrawal
+    // Del withdrawal
     @DeleteMapping(path = "{performanceId}/withdrawal")
     public void withdrawal(
             @PathVariable("performanceId") Long performanceId,
@@ -88,52 +82,13 @@ public class PerformanceController {
         PerformanceService.withdrawal(performanceId, kalitexnis);
     }
 
-    //put-staff
+    // Put add staff
     @PutMapping(path = "{performanceId}/staff")
     public void setStaff(
             @PathVariable("performanceId") Long performanceId,
             @RequestParam(required = false) String staffName) {
         PerformanceService.setStaff(performanceId, staffName);
 
-    }
-
-    //put-review-state
-    @PutMapping(path = "{performanceId}/reviewState")
-    public void reviewState(
-            @PathVariable("performanceId") Long performanceId) {
-        PerformanceService.reviewState(performanceId);
-
-    }
-
-    //put-review
-    @PutMapping(path = "{performanceId}/review")
-    public void reviewPerformance(
-            @PathVariable("performanceId") Long performanceId,
-            @RequestParam(required = false) String staffName,
-            @RequestParam(required = false) float score,
-            @RequestParam(required = false) String scoreDetail) {
-        PerformanceService.review(performanceId, staffName, score, scoreDetail);
-    }
-
-    //put-scheduling-state
-    @PutMapping(path = "{performanceId}/schedulingState")
-    public void schedulingPerformance(
-            @PathVariable("performanceId") Long performanceId) {
-        PerformanceService.scheduling(performanceId);
-    }
-
-    //put-approval-state
-    @PutMapping(path = "{performanceId}/approvalState")
-    public void approvalPerformance(
-            @PathVariable("performanceId") Long performanceId) {
-        PerformanceService.approval(performanceId);
-    }
-
-    //put-final_Sumbision
-    @PutMapping(path = "{performanceId}/finalSumbision")
-    public void finalSumbision(
-            @PathVariable("performanceId") Long performanceId) {
-        PerformanceService.finalSumbision(performanceId);
     }
 
     //put add organizer
@@ -144,14 +99,56 @@ public class PerformanceController {
         PerformanceService.addOrganizer(performanceId, organizerName);
     }
 
-//    //put festival status DECISION
-//    @PutMapping(path = "{performanceId}/festivalDecision")
-//    public void festivalDecision(
-//            @PathVariable("performanceId") Long performanceId) {
-//        PerformanceService.festivalDecision(performanceId);
-//    }
 
-    //put Performance status rejection
+    // States
+    // Put submit state
+    @PutMapping(path = "{performanceId}/submitState")
+    public void submitPerformance(
+            @PathVariable("performanceId") Long performanceId) {
+        PerformanceService.submit(performanceId);
+
+    }
+
+    // Put review state
+    @PutMapping(path = "{performanceId}/reviewState")
+    public void reviewState(
+            @PathVariable("performanceId") Long performanceId) {
+        PerformanceService.reviewState(performanceId);
+
+    }
+
+    // Put review State
+    @PutMapping(path = "{performanceId}/review")
+    public void reviewPerformance(
+            @PathVariable("performanceId") Long performanceId,
+            @RequestParam(required = false) String staffName,
+            @RequestParam(required = false) float score,
+            @RequestParam(required = false) String scoreDetail) {
+        PerformanceService.review(performanceId, staffName, score, scoreDetail);
+    }
+
+    // Put scheduling state
+    @PutMapping(path = "{performanceId}/schedulingState")
+    public void schedulingPerformance(
+            @PathVariable("performanceId") Long performanceId) {
+        PerformanceService.scheduling(performanceId);
+    }
+
+    // Put approval state
+    @PutMapping(path = "{performanceId}/approvalState")
+    public void approvalPerformance(
+            @PathVariable("performanceId") Long performanceId) {
+        PerformanceService.approval(performanceId);
+    }
+
+    // Put final submission state
+    @PutMapping(path = "{performanceId}/finalSubmission")
+    public void finalSubmission(
+            @PathVariable("performanceId") Long performanceId) {
+        PerformanceService.finalSubmission(performanceId);
+    }
+
+    // Put rejection state
     @PutMapping(path = "{performanceId}/performanceManualRejection")
     public void performanceRejection(
             @PathVariable("performanceId") Long performanceId,
@@ -160,12 +157,19 @@ public class PerformanceController {
         PerformanceService.performanceRejection(performanceId, organizerName, rejectionReason);
     }
 
-    //put Performance status acceptance
+    // Put Performance status acceptance
     @PutMapping(path = "{performanceId}/performanceAcceptance")
     public void performanceRejection(
             @PathVariable("performanceId") Long performanceId) {
         PerformanceService.performanceAcceptance(performanceId);
     }
 
+    @GetMapping("/search")
+    public List<Performance> searchPerformances(
+            @RequestParam(required = false) String performanceName,
+            @RequestParam(required = false) String performanceType) {
 
+        return performanceService.searchPerformances(performanceName, performanceType);
+
+    }
 }

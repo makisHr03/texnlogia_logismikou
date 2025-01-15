@@ -1,5 +1,6 @@
 package com.festival.musicFestival.Festival;
 
+import com.festival.musicFestival.Performance.Performance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,11 +54,11 @@ public class FestivalController {
                 expectedRevenue, staff);
     }
 
-    // Default del, delete the festival
-    @DeleteMapping(path = "{festivalId}")
-    public void deleteFestival(@PathVariable("festivalId") Long festivalId) {
-        FestivalService.deleteFestival(festivalId);
-    }
+//    // Default del, delete the festival, for testing
+//    @DeleteMapping(path = "{festivalId}")
+//    public void deleteFestival(@PathVariable("festivalId") Long festivalId) {
+//        FestivalService.deleteFestival(festivalId);
+//    }
 
 
     //put add organizer
@@ -134,4 +135,15 @@ public class FestivalController {
             @PathVariable("festivalId") Long festivalId) {
         FestivalService.announcedState(festivalId);
     }
+
+    @GetMapping("/search")
+    public List<Festival> searchFestival(
+            @RequestParam(required = false) String festivalName,
+            @RequestParam(required = false) String festivalType) {
+
+        return FestivalService.searchFestival(festivalName, festivalType);
+
+    }
+
+
 }
