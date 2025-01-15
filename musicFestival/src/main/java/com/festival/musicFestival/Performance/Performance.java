@@ -46,9 +46,12 @@ public class Performance {
     @CreationTimestamp
     private LocalDateTime performanceCreationDate;
 
+
+    // Default constructor
     public Performance() {
     }
 
+    // Main constructor
     public Performance(Festival festival, String performanceName, String performanceCreatorName,
                        List<String> performanceGroupNames, LocalDate performanceDate, String performanceType,
                        int performanceDuration, String performanceTechnicalRequirements,
@@ -255,20 +258,12 @@ public class Performance {
         this.performanceId = performanceId;
     }
 
-    public void scedulingPerformance(){
-        this.performanceStatus = "SCHEDULING";
-    }
-
-    public void approvalPerformance(){
-        this.performanceStatus = "APPROVAL";
-    }
-
-    public void finalSubmission(){
-        this.performanceStatus = "FINAL_SUBMISSION";
-    }
-
     public List<String> getOrganizer() {
         return organizer;
+    }
+
+    public void setOrganizer(List<String> organizer) {
+        this.organizer = organizer;
     }
 
     public void setOrganizer(String organizerName) {
@@ -276,16 +271,6 @@ public class Performance {
             organizer = new ArrayList<>();
         }
         this.organizer.add(organizerName);
-    }
-
-
-    public void setOrganizer(List<String> organizer) {
-        this.organizer = organizer;
-    }
-
-
-    public void rejectionPerformance(){
-        this.performanceStatus = "REJECTION";
     }
 
     public String getRejectionReason() {
@@ -296,7 +281,25 @@ public class Performance {
         this.rejectionReason = rejectionReason;
     }
 
-    public void performanceAcceptance() {
+
+    // States
+    public void schedulingState(){
+        this.performanceStatus = "SCHEDULING";
+    }
+
+    public void approvalState(){
+        this.performanceStatus = "APPROVAL";
+    }
+
+    public void finalSubmissionState(){
+        this.performanceStatus = "FINAL_SUBMISSION";
+    }
+
+    public void rejectionState(){
+        this.performanceStatus = "REJECTION";
+    }
+
+    public void acceptanceState() {
         this.performanceStatus = "ACCEPTANCE";
     }
 
@@ -304,7 +307,7 @@ public class Performance {
     public String toString() {
         return "Performance{" +
                 "performanceId=" + performanceId +
-//                ", festivalName='" + festivalName + '\'' +
+                ", festival=" + festival +
                 ", performanceName='" + performanceName + '\'' +
                 ", performanceCreatorName='" + performanceCreatorName + '\'' +
                 ", performanceGroupNames=" + performanceGroupNames +
@@ -322,6 +325,8 @@ public class Performance {
                 ", staff='" + staff + '\'' +
                 ", score=" + score +
                 ", scoreDetail='" + scoreDetail + '\'' +
+                ", organizer=" + organizer +
+                ", rejectionReason='" + rejectionReason + '\'' +
                 ", performanceCreationDate=" + performanceCreationDate +
                 '}';
     }

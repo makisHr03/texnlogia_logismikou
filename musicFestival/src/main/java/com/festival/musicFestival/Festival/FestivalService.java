@@ -1,5 +1,6 @@
 package com.festival.musicFestival.Festival;
 
+import com.festival.musicFestival.Performance.Performance;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,12 +17,13 @@ public class FestivalService {
 
     private final FestivalRepository festivalRepository;
 
+    // Constructor
     @Autowired
     public FestivalService(FestivalRepository FestivalRepository) {
         this.festivalRepository = FestivalRepository;
     }
 
-    // get
+    // Get all
     public List<Festival> getFestival() {
         return festivalRepository.findAll();
     }
@@ -30,7 +32,7 @@ public class FestivalService {
     // post
     public void addNewFestival(Festival festival) {
 
-
+        // Check if exist the festival with the id
         Optional<Festival> festivalOptional = festivalRepository
                 .findFestivalByName(festival.getFestivalName());
 
@@ -42,16 +44,17 @@ public class FestivalService {
     }
 
 
-    // Del
-    public void deleteFestival(Long festivalId) {
-        boolean exists = festivalRepository.existsById(festivalId);
-        if (!exists) {
-            throw new IllegalStateException("Festival not found with id: " + festivalId);
-        }
-        festivalRepository.deleteById(festivalId);
-    }
+//    // Del for testing
+//    public void deleteFestival(Long festivalId) {
+//        // Check if exist the festival with the id
+//        boolean exists = festivalRepository.existsById(festivalId);
+//        if (!exists) {
+//            throw new IllegalStateException("Festival not found with id: " + festivalId);
+//        }
+//        festivalRepository.deleteById(festivalId);
+//    }
 
-    //put
+    //put festival
     @Transactional
     public void updateFestival(Long festivalId,
                                String festivalName,
@@ -65,7 +68,7 @@ public class FestivalService {
                                Float expectedRevenue,
                                List<String> staff) {
 
-        // Fetch the festival by ID or throw an exception if not found
+        // Check if exist the festival with the id
         Festival festival = festivalRepository.findById(festivalId)
                 .orElseThrow(() -> new IllegalStateException("Festival not found with id: " + festivalId));
 
@@ -74,7 +77,7 @@ public class FestivalService {
             throw new IllegalStateException("Cannot update venue, budget, or vendor-related details after the festival is ANNOUNCED.");
         }
 
-        // Update the name if valid and unique
+        // Update the name if valid
         if (festivalName != null && !festivalName.trim().isEmpty() &&
                 !Objects.equals(festival.getFestivalName(), festivalName)) {
             festivalRepository.findFestivalByName(festivalName).ifPresent(existingFestival -> {
@@ -93,11 +96,12 @@ public class FestivalService {
             festival.setDates(dates);
         }
 
-        // Update venue layout (stages and vendor areas)
+        // Update venue layout
         if (stagesSpace != null) {
             festival.setStagesSpace(stagesSpace);
         }
 
+        // Update vendor Areas And Facilities
         if (vendorAreasAndFacilities != null) {
             festival.setVendorAreasAndFacilities(vendorAreasAndFacilities);
         }
@@ -107,12 +111,17 @@ public class FestivalService {
             festival.setBudgetTracking(budgetTracking);
         }
 
+        // Update performance cost
         if (performanceCost != null) {
             festival.setPerformanceCost(performanceCost);
         }
+
+        // Update logistics
         if (logistics != null) {
             festival.setLogistics(logistics);
         }
+
+        // Update expected revenue
         if (expectedRevenue != null) {
             festival.setExpectedRevenue(expectedRevenue);
         }
@@ -122,7 +131,6 @@ public class FestivalService {
             festival.setStaff(staff);
         }
     }
-
 
 
     //put add organizer
@@ -139,7 +147,7 @@ public class FestivalService {
         festival.addOrganizer(organizerName);
     }
 
-    //put add organizer
+    //put add staff
     @Transactional
     public void addStaff(Long festivalId, String staffName) {
         Festival festival = festivalRepository.findById(festivalId)
@@ -154,12 +162,13 @@ public class FestivalService {
     }
 
 
-    // del festival Deletion
+    // States
+    // del festival Deletion state
     public void festivalDeletion(Long festivalId, String organizerName) {
         Festival festival = festivalRepository.findById(festivalId)
                 .orElseThrow(() -> new IllegalStateException("Festival not found with ID: " + festivalId));
 
-        if(!festival.getOrganizer().contains(organizerName)){
+        if (!festival.getOrganizer().contains(organizerName)) {
             throw new IllegalStateException("Only the organizer members can delete this Festival.");
         }
 
@@ -171,7 +180,7 @@ public class FestivalService {
     }
 
 
-    // put festival ANNOUNCED
+    // put festival submission state
     @Transactional
     public void submissionStatus(Long festivalId) {
         Festival festival = festivalRepository.findById(festivalId)
@@ -182,10 +191,10 @@ public class FestivalService {
             throw new IllegalStateException("The festival is already in the SUBMISSION state.");
         }
 
-        festival.submissionStatus();
+        festival.submissionState();
     }
 
-    // put festival ANNOUNCED
+    // put festival assignment state
     @Transactional
     public void assignmentStatus(Long festivalId) {
         Festival festival = festivalRepository.findById(festivalId)
@@ -200,7 +209,7 @@ public class FestivalService {
             throw new IllegalStateException("The festival must be on SUBMISSION state first.");
         }
 
-        festival.assignmentStatus();
+        festival.assignmentState();
     }
 
     //put Review State
@@ -219,7 +228,7 @@ public class FestivalService {
         }
 
 
-        festival.reviewStatus();
+        festival.reviewState();
     }
 
     // put schedule state
@@ -238,7 +247,7 @@ public class FestivalService {
         }
 
 
-        festival.scheduleStatus();
+        festival.scheduleState();
     }
 
     // put FINAL_SUBMISSION state
@@ -256,7 +265,7 @@ public class FestivalService {
             throw new IllegalStateException("The festival must be on scheduling state first.");
         }
 
-        festival.finalSubmissionStatus();
+        festival.finalSubmissionState();
     }
 
     // put decision state
@@ -274,10 +283,10 @@ public class FestivalService {
             throw new IllegalStateException("The festival must be on FINAL_SUBMISSION state first.");
         }
 
-        festival.decisionStatus();
+        festival.decisionState();
     }
 
-    // put festival ANNOUNCED
+    // put festival ANNOUNCED state
     @Transactional
     public void announcedState(Long festivalId) {
         Festival festival = festivalRepository.findById(festivalId)
@@ -304,11 +313,21 @@ public class FestivalService {
         }
 
 
-        festival.announcedStatus();
+        festival.announcedState();
     }
 
-
-
+    public List<Festival> searchFestival(String festivalName, String description) {
+        if (festivalName == null && description == null) {
+            return festivalRepository.findAll();
+        }
+        if (festivalName == null) {
+            return festivalRepository.searchFestivalByDecription(description);
+        }
+        if (description == null) {
+            return festivalRepository.searchFestivalByName(festivalName);
+        }
+        return festivalRepository.searchFestival(festivalName, description);
+    }
 
 
 }

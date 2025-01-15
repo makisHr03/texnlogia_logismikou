@@ -197,31 +197,31 @@ public class Festival {
 
 
     // States
-    public void announcedStatus() {
+    public void announcedState() {
         this.festivalStatus = "ANNOUNCED";
     }
 
-    public void submissionStatus() {
+    public void submissionState() {
         this.festivalStatus = "SUBMISSION";
     }
 
-    public void assignmentStatus() {
+    public void assignmentState() {
         this.festivalStatus = "ASSIGNMENT";
     }
 
-    public void reviewStatus() {
+    public void reviewState() {
         this.festivalStatus = "REVIEW";
     }
 
-    public void scheduleStatus() {
+    public void scheduleState() {
         this.festivalStatus = "SCHEDULING";
     }
 
-    public void finalSubmissionStatus() {
+    public void finalSubmissionState() {
         this.festivalStatus = "FINAL_SUBMISSION";
     }
 
-    public void decisionStatus() {
+    public void decisionState() {
         this.festivalStatus = "DECISION";
     }
 
