@@ -29,7 +29,7 @@ public class FestivalService {
     }
 
 
-    // post
+    // Post new festival
     public void addNewFestival(Festival festival) {
 
         // Check if exist the festival with the id
@@ -54,7 +54,7 @@ public class FestivalService {
 //        festivalRepository.deleteById(festivalId);
 //    }
 
-    //put festival
+    // Put festival
     @Transactional
     public void updateFestival(Long festivalId,
                                String festivalName,
@@ -316,6 +316,7 @@ public class FestivalService {
         festival.announcedState();
     }
 
+    // Get search
     public List<Festival> searchFestival(String festivalName, String description) {
         if (festivalName == null && description == null) {
             return festivalRepository.findAll();
